@@ -218,8 +218,6 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
 
         public void cut(int u, int v) {
-            System.err.println(getRoot(vertexNode[u]));
-
             makeFirst(vertexNode[u]);
 
             Edge l = new Edge(u, v);
@@ -324,7 +322,10 @@ public class SequentialDynamicGraph implements DynamicGraph {
     HashSet<Integer> edgeTaken; // is the edge was taken into consideration previously
     int curEdge;
 
+    int connected_components = 0;
+
     public SequentialDynamicGraph(int n) {
+        connected_components = n;
         int p = 1;
         int k = 1;
         while (p <= n) {
@@ -348,6 +349,10 @@ public class SequentialDynamicGraph implements DynamicGraph {
         edges = new HashMap<>();
     }
 
+    public int numberOfCC() {
+        return connected_components;
+    }
+
     public boolean isConnected(int u, int v) {
         return forest[0].isConnected(u, v);
     }
@@ -367,8 +372,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
         edges.put(curEdge, e);
 
         if (!forest[0].isConnected(u, v)) { // If this is a spanning tree
-            System.err.println("Link: " + u + " " + v);
             forest[0].link(u, v); // link two forest trees together
+            connected_components--;
         } else {
             adjacent[u][0].add(curEdge); // simply add to adjacency list on level 0 and update hasVertex and hasEdge
             adjacent[v][0].add(curEdge);
@@ -376,8 +381,6 @@ public class SequentialDynamicGraph implements DynamicGraph {
             forest[0].updateToTop(forest[0].vertexNode[u]);
             forest[0].updateToTop(forest[0].vertexNode[v]);
         }
-
-        System.err.println(getRoot(forest[0].vertexNode[u]));
 
         curEdge++;
     }
@@ -426,9 +429,10 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
 
         for (int level = rank; level >= 0; level--) {
-            forest[rank].cut(u, v);
+            forest[level].cut(u, v);
         }
 
+        boolean replaced = false;
         for (int level = rank; level >= 0; level--) {
             int w = (forest[level].getComponentSize(u) > forest[level].getComponentSize(v))
                     ? v : u; // Choose the smallest component
@@ -455,8 +459,13 @@ public class SequentialDynamicGraph implements DynamicGraph {
                     forest[i].link(ge.u, ge.v);
                 }
 
+                replaced = true;
                 break;
             }
+        }
+
+        if (!replaced) {
+            connected_components++;
         }
 
         edgeIndex.remove(e);
