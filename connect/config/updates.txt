@@ -1,0 +1,4 @@
+2013.10.01 [Burunduk1]
+  -- check.cpp теперь использует my_testlib.h (теперь все быстрее!)
+  -- появились решения за O(nlogn) : connect_sk_nlogn_fast.cpp, connect_sk_nlogn_short.cpp
+  -- все решения перенесены в solutions
