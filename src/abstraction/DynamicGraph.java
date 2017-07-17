@@ -9,4 +9,7 @@ public interface DynamicGraph {
     public boolean isConnected(int u, int v);
     public void addEdge(int u, int v);
     public void removeEdge(int u, int v);
+
+    public void clear();
+    public default void reinitialize() {}
 }

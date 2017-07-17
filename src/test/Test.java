@@ -26,10 +26,16 @@ public class Test {
 
         for (int i = 0; i < q; i++) {
             String query = in.next();
+
+            if (query.equals("?")) {
+                out.println(sdg.numberOfCC());
+                continue;
+            }
+
             int u = in.nextInt() - 1;
             int v = in.nextInt() - 1;
 
-            if (query.equals("?")){
+            if (query.equals("c")) {
                 out.println(sdg.isConnected(u, v));
             } else if (query.equals("+")) {
                 sdg.addEdge(u, v);

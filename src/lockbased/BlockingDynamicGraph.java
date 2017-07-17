@@ -324,7 +324,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
 
     ReentrantLock lock = new ReentrantLock();
 
-    public BlockingDynamicGraph(int n) {
+    public BlockingDynamicGraph(int n, int threads) {
         N = n;
         int p = 1;
         int k = 1;
@@ -382,6 +382,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
 
         lock.lock();
         if (edgeIndex.containsKey(e)) { // If the edge exist, do nothing
+            lock.unlock();
             return;
         }
         edgeIndex.put(e, curEdge);
@@ -433,7 +434,11 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
 
         lock.lock();
 
-        int id = edgeIndex.get(new Edge(u, v));
+        Integer id = edgeIndex.get(new Edge(u, v));
+        if (id == null) {
+            lock.unlock();
+            return;
+        }
         Edge e = edges.get(id);
 
         int rank = e.level;
@@ -444,6 +449,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
 
             forest[rank].updateToTop(forest[rank].vertexNode[u]);
             forest[rank].updateToTop(forest[rank].vertexNode[v]);
+            lock.unlock();
             return;
         }
 

@@ -68,21 +68,22 @@ public class FCArray {
         }
     }
 
-    private static final FCRequest[] tlReq = new FCRequest[fc.FC.MAX_THREADS + 1];
+    private static final int MAX_THREADS = 64;
+    private static final FCRequest[] tlReq = new FCRequest[MAX_THREADS + 1];
 
     public FCRequest[] loadRequests() {
         unsafe.loadFence();
         int end = length;
-        FCRequest[] requests = tlReq;
+        FCRequest[] r = tlReq;
         int j = 0;
         for (int i = 0; i < end; i++) {
             FCRequest request = requests[i];
             if (request != null && request.holdsRequest()) {
-                requests[j++] = request;
+                r[j++] = request;
             }
         }
-        requests[j] = null;
-        return requests;
+        r[j] = null;
+        return r;
     }
 
     public void cleanup() {

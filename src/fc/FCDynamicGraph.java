@@ -1,6 +1,7 @@
 package fc;
 
 import abstraction.DynamicGraph;
+import org.openjdk.jmh.logic.BlackHole;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -324,9 +325,11 @@ public class FCDynamicGraph implements DynamicGraph {
 
     int N;
     int T;
+    int TRIES;
 
-    public FCDynamicGraph(int threads, int n) {
+    public FCDynamicGraph(int n, int threads) {
         T = threads;
+        TRIES = T;
         N = n;
 
         int p = 1;
@@ -370,6 +373,7 @@ public class FCDynamicGraph implements DynamicGraph {
         curEdge = 0;
 
         fc = new FCArray(T);
+        allocatedRequests = new ThreadLocal<>();
     }
 
     public void isConnected(Request request) {
@@ -405,9 +409,6 @@ public class FCDynamicGraph implements DynamicGraph {
         }
 
         curEdge++;
-
-        r.status = FINISHED;
-        FCArray.unsafe.storeFence();
     }
 
     public void increaseLevel(int x, boolean spanning) {
@@ -442,7 +443,10 @@ public class FCDynamicGraph implements DynamicGraph {
             u = v;
             v = q;
         }
-        int id = edgeIndex.get(new Edge(u, v));
+        Integer id = edgeIndex.get(new Edge(u, v));
+        if (id == null) {
+            return;
+        }
         Edge e = edges.get(id);
 
         int rank = e.level;
@@ -491,12 +495,14 @@ public class FCDynamicGraph implements DynamicGraph {
 
         edgeIndex.remove(e);
         edges.remove(id);
-
-        r.status = FINISHED;
-        FCArray.unsafe.storeFence();
     }
 
     public FCArray fc;
+
+    public void reinitialize() {
+        fc = new FCArray(T);
+        allocatedRequests = new ThreadLocal<>();
+    }
 
     private ThreadLocal<Request> allocatedRequests = new ThreadLocal<Request>();
 
@@ -521,9 +527,9 @@ public class FCDynamicGraph implements DynamicGraph {
         int type;
         int u, v;
 
-        int status;
+        volatile int status;
 
-        boolean leader;
+        volatile boolean leader;
 
         public Request() {
             status = PUSHED;
@@ -534,6 +540,7 @@ public class FCDynamicGraph implements DynamicGraph {
         }
 
         public void set(int type, int u, int v) {
+            status = PUSHED;
             this.type = type;
             this.u = u;
             this.v = v;
@@ -543,8 +550,12 @@ public class FCDynamicGraph implements DynamicGraph {
         boolean isConnected;
     }
 
-    public boolean leaderExists;
-    public FCArray.FCRequest[] loadedRequests;
+    public void sleep() {
+        BlackHole.consumeCPU(300);
+    }
+
+    public volatile boolean leaderExists;
+    public volatile FCArray.FCRequest[] loadedRequests;
 
     public void handleRequest(Request request) {
         fc.addRequest(request);
@@ -561,86 +572,92 @@ public class FCDynamicGraph implements DynamicGraph {
                 if (fc.tryLock()) {
                     leaderExists = true;
                     isLeader = request.leader = true;
-                    FCArray.unsafe.storeFence();
                 }
             }
 
             if (isLeader && currentStatus == PUSHED) {
-                FCArray.FCRequest[] requests = loadedRequests == null ? fc.loadRequests() : loadedRequests;
+                for (int t = 0; t < TRIES; t++) {
+                    FCArray.FCRequest[] requests = loadedRequests == null ? fc.loadRequests() : loadedRequests;
 
-                if (requests[0] == null) {
-                    fc.cleanup();
-                    break;
-                }
-
-                if (request.status == FINISHED) {
-                    request.leader = false;
-
-                    loadedRequests = requests;
-                    ((Request) requests[0]).leader = true;
-
-                    FCArray.unsafe.storeFence();
-                    return;
-                }
-                loadedRequests = null;
-
-                int length = 0;
-                for (int i = 0; i < requests.length; i++) {
-                    Request r = (Request) requests[i];
-                    if (r == null) {
-                        length = i;
+                    if (requests[0] == null) {
+                        fc.cleanup();
                         break;
                     }
-                    if (r.type == CONNECTED) {
-                        r.status = PARALLEL;
+
+                    if (request.status == FINISHED) {
+                        request.leader = false;
+
+                        loadedRequests = requests;
+                        ((Request) requests[0]).leader = true;
+//                        System.err.println("Give  to " + requests[0]);
+                        return;
                     }
-                }
+                    loadedRequests = null;
 
-                FCArray.unsafe.storeFence();
-
-                for (int i = 0; i < length; i++) {
-                    Request r = (Request) requests[i];
-                    if (r.type != CONNECTED)
-                        continue;
-                    FCArray.unsafe.loadFence();
-                    while (r.status == PARALLEL) {
-                        FCArray.unsafe.loadFence();
-                    }
-                }
-
-                for (int i = 0; i < length; i++) {
-                    Request r = (Request) requests[i];
-                    if (r.type != CONNECTED) {
-                        if (r.type == ADD) { // the type could be add or remove
-                            addEdge(r);
-                        } else {
-                            removeEdge(r);
+                    int length = 0;
+                    for (int i = 0; i < requests.length; i++) {
+                        Request r = (Request) requests[i];
+                        if (r == null) {
+                            length = i;
+                            break;
+                        }
+                        if (r.type == CONNECTED) {
+                            r.status = PARALLEL;
                         }
                     }
-                }
 
-                FCArray.unsafe.storeFence();
+                    if (request.type == CONNECTED) {
+                        isConnected(request);
+                    }
+
+                    for (int i = 0; i < length; i++) {
+                        Request r = (Request) requests[i];
+                        if (r.type != CONNECTED)
+                            continue;
+                        while (r.status == PARALLEL) {
+                            sleep();
+                        }
+                    }
+
+                    for (int i = 0; i < length; i++) {
+                        Request r = (Request) requests[i];
+                        if (r.type != CONNECTED) {
+                            if (r.type == ADD) { // the type could be add or remove
+                                addEdge(r);
+                            } else {
+                                removeEdge(r);
+                            }
+                            r.status = FINISHED;
+                        }
+                    }
+
+                    fc.cleanup();
+                }
 
                 leaderExists = false;
                 request.leader = false;
                 fc.unlock();
             } else {
-                FCArray.unsafe.loadFence();
                 while ((currentStatus = request.status) == PUSHED &&
                         !request.leader && leaderExists) {
-                    FCArray.unsafe.loadFence();
+                    sleep();
                 }
                 if (currentStatus == PUSHED) { // I'm the leader or no leader at all
                     continue;
                 }
-                // The status has to be PARALLEL
-                if (request.type == CONNECTED) {
-                    isConnected(request); // Run in parallel
+
+                if (currentStatus == PARALLEL && request.type != CONNECTED) {
+                    throw new AssertionError("Fuck");
                 }
 
-                FCArray.unsafe.loadFence();
+                // The status has to be PARALLEL
+                if (currentStatus == PARALLEL) {
+                    isConnected(request); // Run in parallel
+                    return;
+                }
+
                 while (request.status != FINISHED) { // Wait for the combiner to finish
-                    FCArray.unsafe.loadFence();
+                    sleep();
                 }
             }
         }
@@ -649,7 +666,7 @@ public class FCDynamicGraph implements DynamicGraph {
     public boolean isConnected(int u, int v) {
         Request request = getLocalRequest();
         request.set(CONNECTED, u, v);
-        FCArray.unsafe.storeFence();
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
         return request.isConnected;
     }
@@ -657,14 +674,14 @@ public class FCDynamicGraph implements DynamicGraph {
     public void addEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(ADD, u, v);
-        FCArray.unsafe.storeFence();
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
     }
 
     public void removeEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(REMOVE, u, v);
-        FCArray.unsafe.storeFence();
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
     }
 }

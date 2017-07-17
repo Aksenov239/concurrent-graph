@@ -471,4 +471,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
         edgeIndex.remove(e);
         edges.remove(id);
     }
+
+    public void clear() {
+        throw new AssertionError("Clear function is not implemented");
+    }
 }
