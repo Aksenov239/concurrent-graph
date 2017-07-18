@@ -6,6 +6,7 @@ import test.workers.TreeWorker;
 import test.workers.Worker;
 
 import java.util.ArrayList;
+import java.util.Locale;
 import java.util.Random;
 
 /**
@@ -108,16 +109,18 @@ public class Measure {
             successfulConnected += workers[i].successfulConnected;
         }
 
+        Locale.setDefault(Locale.US);
+
         String result = "Results:\n" + "-----------------\n" +
                 "Total time spent:      \t" + totalTime + "\n" +
                 "Throughput:            \t" + (totalAdd + totalRemove + totalConnected) / totalTime + " ops/sec" + "\n" +
                 "Total operations:      \t" + (totalAdd + totalRemove + totalConnected) + "\n" +
                 " -- Total add:         \t" + totalAdd + "\n" +
-                "     | successful      \t" + ((int) (100. * successfulAdd / totalAdd)) + "%\n" +
+                "     | successful      \t" + (100. * successfulAdd / totalAdd) + "%\n" +
                 " -- Total remove:      \t" + totalRemove + "\n" +
-                "     | successful      \t" + ((int) (100. * successfulRemove / totalRemove)) + "%\n" +
+                "     | successful      \t" + (100. * successfulRemove / totalRemove) + "%\n" +
                 " -- Total isConnected: \t" + totalConnected + "\n" +
-                "     | successful      \t" + ((int) (100. * successfulConnected / totalConnected)) + "%";
+                "     | successful      \t" + (100. * successfulConnected / totalConnected) + "%";
 
         System.out.println(result);
 
