@@ -29,13 +29,19 @@ public class RandomWorker extends Worker {
 
             int percent = rnd.nextInt(100);
             if (percent > 100 - connectedRatio) {
-                graph.isConnected(v, u);
+                if (graph.isConnected(v, u)) {
+                    successfulConnected++;
+                }
                 numConnected++;
             } else if (percent < (100 - connectedRatio)) {
-                graph.addEdge(v, u);
+                if (graph.addEdge(v, u)) {
+                    successfulAdd++;
+                }
                 numAdd++;
             } else {
-                graph.removeEdge(v, u);
+                if (graph.removeEdge(v, u)) {
+                    successfulRemove++;
+                }
                 numRemove++;
             }
         }

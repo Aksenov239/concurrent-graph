@@ -2,7 +2,9 @@ package fc;
 
 import abstraction.DynamicGraph;
 import org.openjdk.jmh.logic.BlackHole;
+import sun.misc.Unsafe;
 
+import java.lang.reflect.Constructor;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -13,7 +15,7 @@ import java.util.Random;
  * Date: 14.07.2017
  * Time: 15:56
  */
-public class FCDynamicGraph implements DynamicGraph {
+public class FCDynamicGraphFlush implements DynamicGraph {
     Random rnd = new Random(239);
 
     public class Edge {
@@ -327,7 +329,7 @@ public class FCDynamicGraph implements DynamicGraph {
     int T;
     int TRIES;
 
-    public FCDynamicGraph(int n, int threads) {
+    public FCDynamicGraphFlush(int n, int threads) {
         T = threads;
         TRIES = T;
         N = n;
@@ -374,12 +376,16 @@ public class FCDynamicGraph implements DynamicGraph {
 
         fc = new FCArray(T);
         allocatedRequests = new ThreadLocal<>();
+
+        leaderExists = false;
+
+        unsafe.storeFence();
     }
 
     public void isConnected(Request request) {
-        request.isConnected = forest[0].isConnected(request.u, request.v);
+        request.result = forest[0].isConnected(request.u, request.v);
         request.status = FINISHED;
-        FCArray.unsafe.storeFence();
+        unsafe.storeFence();
     }
 
     public void addEdge(Request r) {
@@ -393,8 +399,10 @@ public class FCDynamicGraph implements DynamicGraph {
 
         Edge e = new Edge(u, v);
         if (edgeIndex.containsKey(e)) { // If the edge exist, do nothing
+            r.result = false;
             return;
         }
+        r.result = true;
         edgeIndex.put(e, curEdge);
         edges.put(curEdge, e);
 
@@ -445,8 +453,10 @@ public class FCDynamicGraph implements DynamicGraph {
         }
         Integer id = edgeIndex.get(new Edge(u, v));
         if (id == null) {
+            r.result = false;
             return;
         }
+        r.result = true;
         Edge e = edges.get(id);
 
         int rank = e.level;
@@ -527,9 +537,9 @@ public class FCDynamicGraph implements DynamicGraph {
         int type;
         int u, v;
 
-        volatile int status;
+        int status;
 
-        volatile boolean leader;
+        boolean leader;
 
         public Request() {
             status = PUSHED;
@@ -540,27 +550,28 @@ public class FCDynamicGraph implements DynamicGraph {
         }
 
         public void set(int type, int u, int v) {
-            status = PUSHED;
             this.type = type;
             this.u = u;
             this.v = v;
+            status = PUSHED;
+            unsafe.storeFence();
         }
 
-        // For isConnected
-        boolean isConnected;
+        // For result
+        boolean result;
     }
 
     public void sleep() {
         BlackHole.consumeCPU(300);
     }
 
-    public volatile boolean leaderExists;
-    public volatile FCArray.FCRequest[] loadedRequests;
+    public boolean leaderExists;
+    public FCArray.FCRequest[] loadedRequests;
 
     public void handleRequest(Request request) {
         fc.addRequest(request);
         while (true) {
-            FCArray.unsafe.loadFence();
+            unsafe.loadFence();
             boolean isLeader = request.leader;
             int currentStatus = request.status;
 
@@ -572,6 +583,7 @@ public class FCDynamicGraph implements DynamicGraph {
                 if (fc.tryLock()) {
                     leaderExists = true;
                     isLeader = request.leader = true;
+                    unsafe.storeFence();
                 }
             }
 
@@ -588,8 +600,10 @@ public class FCDynamicGraph implements DynamicGraph {
                         request.leader = false;
 
                         loadedRequests = requests;
+
                         ((Request) requests[0]).leader = true;
-//                        System.err.println("Give  to " + requests[0]);
+
+                        unsafe.storeFence();
                         return;
                     }
                     loadedRequests = null;
@@ -606,16 +620,20 @@ public class FCDynamicGraph implements DynamicGraph {
                         }
                     }
 
+                    unsafe.storeFence();
+
                     if (request.type == CONNECTED) {
                         isConnected(request);
                     }
 
+                    unsafe.loadFence();
                     for (int i = 0; i < length; i++) {
                         Request r = (Request) requests[i];
                         if (r.type != CONNECTED)
                             continue;
                         while (r.status == PARALLEL) {
                             sleep();
+                            unsafe.loadFence();
                         }
                     }
 
@@ -630,6 +648,7 @@ public class FCDynamicGraph implements DynamicGraph {
                             r.status = FINISHED;
                         }
                     }
+                    unsafe.storeFence();
 
                     fc.cleanup();
                 }
@@ -638,9 +657,11 @@ public class FCDynamicGraph implements DynamicGraph {
                 request.leader = false;
                 fc.unlock();
             } else {
+                unsafe.loadFence();
                 while ((currentStatus = request.status) == PUSHED &&
                         !request.leader && leaderExists) {
                     sleep();
+                    unsafe.loadFence();
                 }
                 if (currentStatus == PUSHED) { // I'm the leader or no leader at all
                     continue;
@@ -653,12 +674,14 @@ public class FCDynamicGraph implements DynamicGraph {
                 // The status has to be PARALLEL
                 if (currentStatus == PARALLEL) {
                     isConnected(request); // Run in parallel
-                    return;
                 }
 
+                unsafe.loadFence();
                 while (request.status != FINISHED) { // Wait for the combiner to finish
                     sleep();
+                    unsafe.loadFence();
                 }
+                return;
             }
         }
     }
@@ -666,22 +689,33 @@ public class FCDynamicGraph implements DynamicGraph {
     public boolean isConnected(int u, int v) {
         Request request = getLocalRequest();
         request.set(CONNECTED, u, v);
-//        FCArray.unsafe.storeFence();
         handleRequest(request);
-        return request.isConnected;
+        return request.result;
     }
 
-    public void addEdge(int u, int v) {
+    public boolean addEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(ADD, u, v);
-//        FCArray.unsafe.storeFence();
         handleRequest(request);
+        return request.result;
     }
 
-    public void removeEdge(int u, int v) {
+    public boolean removeEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(REMOVE, u, v);
-//        FCArray.unsafe.storeFence();
         handleRequest(request);
+        return request.result;
+    }
+
+    public static final Unsafe unsafe;
+
+    static {
+        try {
+            Constructor<Unsafe> unsafeConstructor = Unsafe.class.getDeclaredConstructor();
+            unsafeConstructor.setAccessible(true);
+            unsafe = unsafeConstructor.newInstance();
+        } catch (Exception e) {
+            throw new Error(e);
+        }
     }
 }

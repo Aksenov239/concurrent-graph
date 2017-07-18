@@ -357,7 +357,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
         return forest[0].isConnected(u, v);
     }
 
-    public void addEdge(int u, int v) {
+    public boolean addEdge(int u, int v) {
         if (u > v) {
             int q = u;
             u = v;
@@ -366,7 +366,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
         Edge e = new Edge(u, v);
         if (edgeIndex.containsKey(e)) { // If the edge exist, do nothing
-            return;
+            return false;
         }
         edgeIndex.put(e, curEdge);
         edges.put(curEdge, e);
@@ -383,6 +383,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
 
         curEdge++;
+        return true;
     }
 
     public void increaseLevel(int x, boolean spanning) {
@@ -408,7 +409,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
     }
 
-    public void removeEdge(int u, int v) {
+    public boolean removeEdge(int u, int v) {
         if (u > v) {
             int q = u;
             u = v;
@@ -425,7 +426,6 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
             forest[rank].updateToTop(forest[rank].vertexNode[u]);
             forest[rank].updateToTop(forest[rank].vertexNode[v]);
-            return;
         }
 
         for (int level = rank; level >= 0; level--) {
@@ -470,6 +470,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
         edgeIndex.remove(e);
         edges.remove(id);
+
+        return true;
     }
 
     public void clear() {

@@ -372,7 +372,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
         return result;
     }
 
-    public void addEdge(int u, int v) {
+    public boolean addEdge(int u, int v) {
         if (u > v) {
             int q = u;
             u = v;
@@ -383,7 +383,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
         lock.lock();
         if (edgeIndex.containsKey(e)) { // If the edge exist, do nothing
             lock.unlock();
-            return;
+            return false;
         }
         edgeIndex.put(e, curEdge);
         edges.put(curEdge, e);
@@ -400,6 +400,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
 
         curEdge++;
         lock.unlock();
+        return true;
     }
 
     public void increaseLevel(int x, boolean spanning) {
@@ -425,7 +426,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
         }
     }
 
-    public void removeEdge(int u, int v) {
+    public boolean removeEdge(int u, int v) {
         if (u > v) {
             int q = u;
             u = v;
@@ -437,7 +438,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
         Integer id = edgeIndex.get(new Edge(u, v));
         if (id == null) {
             lock.unlock();
-            return;
+            return false;
         }
         Edge e = edges.get(id);
 
@@ -450,7 +451,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
             forest[rank].updateToTop(forest[rank].vertexNode[u]);
             forest[rank].updateToTop(forest[rank].vertexNode[v]);
             lock.unlock();
-            return;
+            return true;
         }
 
         for (int level = rank; level >= 0; level--) {
@@ -490,6 +491,7 @@ public class BlockingDynamicGraph implements abstraction.DynamicGraph {
         edgeIndex.remove(e);
         edges.remove(id);
         lock.unlock();
+        return true;
     }
 
 

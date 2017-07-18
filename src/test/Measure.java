@@ -94,12 +94,18 @@ public class Measure {
         }
 
         int totalAdd = 0;
+        int successfulAdd = 0;
         int totalRemove = 0;
+        int successfulRemove = 0;
         int totalConnected = 0;
+        int successfulConnected = 0;
         for (int i = 0; i < threads; i++) {
             totalAdd += workers[i].numAdd;
+            successfulAdd += workers[i].successfulAdd;
             totalRemove += workers[i].numRemove;
+            successfulRemove += workers[i].successfulRemove;
             totalConnected += workers[i].numConnected;
+            successfulConnected += workers[i].successfulConnected;
         }
 
         String result = "Results:\n" + "-----------------\n" +
@@ -107,8 +113,11 @@ public class Measure {
                 "Throughput:            \t" + (totalAdd + totalRemove + totalConnected) / totalTime + " ops/sec" + "\n" +
                 "Total operations:      \t" + (totalAdd + totalRemove + totalConnected) + "\n" +
                 " -- Total add:         \t" + totalAdd + "\n" +
+                "     | successful      \t" + ((int) (100. * successfulAdd / totalAdd)) + "%\n" +
                 " -- Total remove:      \t" + totalRemove + "\n" +
-                " -- Total isConnected: \t" + totalConnected;
+                "     | successful      \t" + ((int) (100. * successfulRemove / totalRemove)) + "%\n" +
+                " -- Total isConnected: \t" + totalConnected + "\n" +
+                "     | successful      \t" + ((int) (100. * successfulConnected / totalConnected)) + "%";
 
         System.out.println(result);
 

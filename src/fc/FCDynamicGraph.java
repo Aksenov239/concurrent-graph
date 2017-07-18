@@ -377,7 +377,7 @@ public class FCDynamicGraph implements DynamicGraph {
     }
 
     public void isConnected(Request request) {
-        request.isConnected = forest[0].isConnected(request.u, request.v);
+        request.result = forest[0].isConnected(request.u, request.v);
         request.status = FINISHED;
     }
 
@@ -392,8 +392,12 @@ public class FCDynamicGraph implements DynamicGraph {
 
         Edge e = new Edge(u, v);
         if (edgeIndex.containsKey(e)) { // If the edge exist, do nothing
+            r.result = false;
             return;
         }
+
+        r.result = true;
+
         edgeIndex.put(e, curEdge);
         edges.put(curEdge, e);
 
@@ -444,8 +448,12 @@ public class FCDynamicGraph implements DynamicGraph {
         }
         Integer id = edgeIndex.get(new Edge(u, v));
         if (id == null) {
+            r.result = false;
             return;
         }
+
+        r.result = true;
+
         Edge e = edges.get(id);
 
         int rank = e.level;
@@ -545,8 +553,8 @@ public class FCDynamicGraph implements DynamicGraph {
             status = PUSHED;
         }
 
-        // For isConnected
-        boolean isConnected;
+        // For result
+        boolean result;
     }
 
     public void sleep() {
@@ -651,12 +659,12 @@ public class FCDynamicGraph implements DynamicGraph {
                 // The status has to be PARALLEL
                 if (currentStatus == PARALLEL) {
                     isConnected(request); // Run in parallel
-                    return;
                 }
 
                 while (request.status != FINISHED) { // Wait for the combiner to finish
                     sleep();
                 }
+                return;
             }
         }
     }
@@ -665,18 +673,20 @@ public class FCDynamicGraph implements DynamicGraph {
         Request request = getLocalRequest();
         request.set(CONNECTED, u, v);
         handleRequest(request);
-        return request.isConnected;
+        return request.result;
     }
 
-    public void addEdge(int u, int v) {
+    public boolean addEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(ADD, u, v);
         handleRequest(request);
+        return request.result;
     }
 
-    public void removeEdge(int u, int v) {
+    public boolean removeEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(REMOVE, u, v);
         handleRequest(request);
+        return request.result;
     }
 }

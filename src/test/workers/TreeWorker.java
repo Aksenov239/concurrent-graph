@@ -33,18 +33,21 @@ public class TreeWorker extends Worker {
                 int u = rnd.nextInt(size - 1) + 1;
                 int v = rnd.nextInt(u);
 
-//                System.err.println("Query " + u + " " + v);
-                graph.isConnected(v, u);
+                if (graph.isConnected(v, u)) {
+                    successfulConnected++;
+                }
                 numConnected++;
             } else {
                 Measure.Edge e = edges.get(rnd.nextInt(edges.size()));
                 if (percent < (100 - connectedRatio) / 2) {
-//                    System.err.println("Add " + e.u + " " + e.v);
-                    graph.addEdge(e.v, e.u);
+                    if (graph.addEdge(e.v, e.u)) {
+                        successfulAdd++;
+                    }
                     numAdd++;
                 } else {
-//                    System.err.println("Remove " + e.u + " " + e.v);
-                    graph.removeEdge(e.v, e.u);
+                    if (graph.removeEdge(e.v, e.u)) {
+                        successfulRemove++;
+                    }
                     numRemove++;
                 }
             }
