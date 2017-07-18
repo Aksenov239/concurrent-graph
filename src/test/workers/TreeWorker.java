@@ -29,7 +29,7 @@ public class TreeWorker extends Worker {
     public void run() {
         while (!stop) {
             int percent = rnd.nextInt(100);
-            if (percent > 100 - connectedRatio) {
+            if (percent >= 100 - connectedRatio) {
                 int u = rnd.nextInt(size - 1) + 1;
                 int v = rnd.nextInt(u);
 

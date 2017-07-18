@@ -28,12 +28,12 @@ public class RandomWorker extends Worker {
             int v = rnd.nextInt(u);
 
             int percent = rnd.nextInt(100);
-            if (percent > 100 - connectedRatio) {
+            if (percent >= 100 - connectedRatio) {
                 if (graph.isConnected(v, u)) {
                     successfulConnected++;
                 }
                 numConnected++;
-            } else if (percent < (100 - connectedRatio)) {
+            } else if (percent < (100 - connectedRatio) / 2) {
                 if (graph.addEdge(v, u)) {
                     successfulAdd++;
                 }
