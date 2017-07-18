@@ -376,10 +376,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
 
         fc = new FCArray(T);
         allocatedRequests = new ThreadLocal<>();
-
-        leaderExists = false;
-
-        unsafe.storeFence();
     }
 
     public void isConnected(Request request) {
@@ -600,6 +596,8 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                         request.leader = false;
 
                         loadedRequests = requests;
+
+                        unsafe.storeFence();
 
                         ((Request) requests[0]).leader = true;
 
