@@ -7,7 +7,7 @@ def filename(warmup, duration, proc, size, connect, t, benchmark):
     return "out/log/w{}-d{}/{}_{}_{}_{}_{}.txt".format(warmup, duration, benchmark, proc, size, connect, t)
 
 classpath = "bin:lib/jmh-core-0.1.jar"
-mainclass = "testing.Measure"
+mainclass = "test.Measure"
 
 keys = ["throughput"]
 
