@@ -379,6 +379,7 @@ public class FCDynamicGraph implements DynamicGraph {
     public void isConnected(Request request) {
         request.isConnected = forest[0].isConnected(request.u, request.v);
         request.status = FINISHED;
+        FCArray.unsafe.storeFence();
     }
 
     public void addEdge(Request r) {
@@ -523,8 +524,8 @@ public class FCDynamicGraph implements DynamicGraph {
     private static final int REMOVE = 2;
 
     public class Request extends FCArray.FCRequest {
-        volatile int type;
-        volatile int u, v;
+        int type;
+        int u, v;
 
         volatile int status;
 
@@ -539,10 +540,10 @@ public class FCDynamicGraph implements DynamicGraph {
         }
 
         public void set(int type, int u, int v) {
+            status = PUSHED;
             this.type = type;
             this.u = u;
             this.v = v;
-            status = PUSHED;
         }
 
         // For isConnected
@@ -559,6 +560,7 @@ public class FCDynamicGraph implements DynamicGraph {
     public void handleRequest(Request request) {
         fc.addRequest(request);
         while (true) {
+            FCArray.unsafe.loadFence();
             boolean isLeader = request.leader;
             int currentStatus = request.status;
 
@@ -664,6 +666,7 @@ public class FCDynamicGraph implements DynamicGraph {
     public boolean isConnected(int u, int v) {
         Request request = getLocalRequest();
         request.set(CONNECTED, u, v);
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
         return request.isConnected;
     }
@@ -671,12 +674,14 @@ public class FCDynamicGraph implements DynamicGraph {
     public void addEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(ADD, u, v);
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
     }
 
     public void removeEdge(int u, int v) {
         Request request = getLocalRequest();
         request.set(REMOVE, u, v);
+//        FCArray.unsafe.storeFence();
         handleRequest(request);
     }
 }
