@@ -22,8 +22,10 @@ types = ["tree"]
 max_proc = int(sys.argv[1])
 
 benchmarks = [
-           "fc.FCDynamicGraph",
-           "lockbased.BlockingDynamicGraph",
+#           "fc.FCDynamicGraph",
+            "fc.FCDynamicGraphFlush",
+#           "lockbased.BlockingDynamicGraph",
+#           "lockbased.BlockingRWDynamicGraph"
          ]
 
 if not os.path.isdir("out/log/w{}-d{}/".format(warmup, duration)):
