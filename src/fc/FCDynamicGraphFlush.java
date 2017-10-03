@@ -357,6 +357,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
         edges = new HashMap<>();
 
         fc = new FCArray(threads);
+        readRequests = new Request[T];
     }
 
     public void clear() {
@@ -504,6 +505,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
     }
 
     public FCArray fc;
+    private final Request[] readRequests;
 
     public void reinitialize() {
         fc = new FCArray(T);
@@ -606,6 +608,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                     }
                     loadedRequests = null;
 
+                    int readLength = 0;
                     int length = 0;
                     for (int i = 0; i < requests.length; i++) {
                         Request r = (Request) requests[i];
@@ -615,6 +618,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                         }
                         if (r.type == CONNECTED) {
                             r.status = PARALLEL;
+                            readRequests[readLength++] = r;
                         }
                     }
 
@@ -625,8 +629,8 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                     }
 
                     unsafe.loadFence();
-                    for (int i = 0; i < length; i++) {
-                        Request r = (Request) requests[i];
+                    for (int i = 0; i < readLength; i++) {
+                        Request r = readRequests[i];
                         if (r.type != CONNECTED)
                             continue;
                         while (r.status == PARALLEL) {
