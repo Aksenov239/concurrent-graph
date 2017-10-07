@@ -20,11 +20,11 @@ public class Measure {
     int size;
     int iterations;
     String benchClassname;
-    String workerType;
+    String workerType = "tree";
 
     DynamicGraph graph;
 
-    ArrayList<Edge> initialTree;
+    ArrayList<Edge>[] initialTrees;
 
     public class Edge {
         public int u, v;
@@ -35,18 +35,29 @@ public class Measure {
         }
     }
 
-    public void setup() { // Setup the graph with tree
+    public void setup(String workerType) { // Setup the graph with tree
         Random rnd = new Random(239);
-        initialTree = new ArrayList<>();
-        for (int i = 1; i < size; i++) {
-            Edge e = new Edge(i, rnd.nextInt(i));
-            initialTree.add(e);
-            graph.addEdge(e.u, e.v);
+        if (workerType.equals("tree")) {
+            initialTrees = new ArrayList[1];
+        } else if (workerType.equals("trees")) {
+            initialTrees = new ArrayList[threads];
+        } else if (workerType.equals("graph")) {
+            initialTrees = new ArrayList[threads];
+        }
+        for (int t = 0; t < initialTrees.length; t++) {
+            initialTrees[t] = new ArrayList<>();
+            for (int i = 1; i < size; i++) {
+                Edge e = new Edge(i, rnd.nextInt(i));
+                initialTrees[t].add(e);
+                if (rnd.nextBoolean()) {
+                    graph.addEdge(e.u, e.v);
+                }
+            }
         }
     }
 
     public void evaluateFor(int milliseconds, boolean withStats) {
-        setup();
+        setup(workerType);
         graph.reinitialize();
 
         System.out.println("Setup finished");
@@ -55,7 +66,9 @@ public class Measure {
         Worker[] workers = new Worker[threads];
         for (int i = 0; i < threads; i++) {
             if (workerType.equals("tree")) {
-                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTree);
+                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees[0]);
+            } if (workerType.equals("trees")) {
+                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees[i]);
             } else {
                 workers[i] = new RandomWorker(i, graph, size, connectedRatio);
             }
@@ -116,11 +129,11 @@ public class Measure {
                 "Throughput:            \t" + (totalAdd + totalRemove + totalConnected) / totalTime + " ops/sec" + "\n" +
                 "Total operations:      \t" + (totalAdd + totalRemove + totalConnected) + "\n" +
                 " -- Total add:         \t" + totalAdd + "\n" +
-                "     | successful      \t" + (100. * successfulAdd / totalAdd) + "%\n" +
+                "     | successful      \t" + (100. * successfulAdd / totalAdd) + " %\n" +
                 " -- Total remove:      \t" + totalRemove + "\n" +
-                "     | successful      \t" + (100. * successfulRemove / totalRemove) + "%\n" +
+                "     | successful      \t" + (100. * successfulRemove / totalRemove) + " %\n" +
                 " -- Total isConnected: \t" + totalConnected + "\n" +
-                "     | successful      \t" + (100. * successfulConnected / totalConnected) + "%";
+                "     | successful      \t" + (100. * successfulConnected / totalConnected) + " %";
 
         System.out.println(result);
 

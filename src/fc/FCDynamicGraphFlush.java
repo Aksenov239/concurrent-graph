@@ -356,8 +356,8 @@ public class FCDynamicGraphFlush implements DynamicGraph {
         edgeIndex = new HashMap<>();
         edges = new HashMap<>();
 
-        fc = new FCArray(threads);
         readRequests = new Request[T];
+        reinitialize();
     }
 
     public void clear() {
@@ -375,8 +375,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
         edges.clear();
         curEdge = 0;
 
-        fc = new FCArray(T);
-        allocatedRequests = new ThreadLocal<>();
+        reinitialize();
     }
 
     public void isConnected(Request request) {
@@ -609,17 +608,27 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                     loadedRequests = null;
 
                     int readLength = 0;
-                    int length = 0;
                     for (int i = 0; i < requests.length; i++) {
                         Request r = (Request) requests[i];
                         if (r == null) {
-                            length = i;
                             break;
                         }
                         if (r.type == CONNECTED) {
-                            r.status = PARALLEL;
                             readRequests[readLength++] = r;
+                        } else {
+                            if (r.type == ADD) { // the type could be add or remove
+                                addEdge(r);
+                            } else {
+                                removeEdge(r);
+                            }
+                            r.status = FINISHED;
                         }
+                    }
+                    
+                    unsafe.storeFence();
+
+                    for (int i = 0; i < readLength; i++) {
+                        readRequests[i].status = PARALLEL;
                     }
 
                     unsafe.storeFence();
@@ -638,19 +647,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                             unsafe.loadFence();
                         }
                     }
-
-                    for (int i = 0; i < length; i++) {
-                        Request r = (Request) requests[i];
-                        if (r.type != CONNECTED) {
-                            if (r.type == ADD) { // the type could be add or remove
-                                addEdge(r);
-                            } else {
-                                removeEdge(r);
-                            }
-                            r.status = FINISHED;
-                        }
-                    }
-                    unsafe.storeFence();
 
                     fc.cleanup();
                 }

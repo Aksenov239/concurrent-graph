@@ -22,7 +22,7 @@ public class Test {
         int n = in.nextInt();
         int q = in.nextInt();
 
-        SequentialDynamicGraph sdg = new SequentialDynamicGraph(n);
+        SequentialDynamicGraph sdg = new SequentialDynamicGraph(n, 1);
 
         for (int i = 0; i < q; i++) {
             String query = in.next();

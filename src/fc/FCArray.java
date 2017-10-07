@@ -72,7 +72,6 @@ public class FCArray {
     private static final FCRequest[] tlReq = new FCRequest[MAX_THREADS + 1];
 
     public FCRequest[] loadRequests() {
-        unsafe.loadFence();
         int end = length;
         FCRequest[] r = tlReq;
         int j = 0;

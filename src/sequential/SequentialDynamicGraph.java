@@ -315,6 +315,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
     }
 
+    int N;
     Forest[] forest;
     HashSet<Integer>[][] adjacent;
     HashMap<Integer, Edge> edges; // Edge by id
@@ -324,7 +325,9 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
     int connected_components = 0;
 
-    public SequentialDynamicGraph(int n) {
+    public SequentialDynamicGraph(int n, int threads) {
+        N = n;
+
         connected_components = n;
         int p = 1;
         int k = 1;
@@ -347,6 +350,25 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
         edgeIndex = new HashMap<>();
         edges = new HashMap<>();
+    }
+
+    public void clear() {
+        connected_components = N;
+
+        for (int i = 0; i < forest.length; i++) {
+            forest[i] = new Forest(N, i);
+        }
+
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < forest.length; j++) {
+                adjacent[i][j].clear();
+            }
+        }
+
+        edgeIndex.clear();
+        edges.clear();
+
+        curEdge = 0;
     }
 
     public int numberOfCC() {
@@ -472,9 +494,5 @@ public class SequentialDynamicGraph implements DynamicGraph {
         edges.remove(id);
 
         return true;
-    }
-
-    public void clear() {
-        throw new AssertionError("Clear function is not implemented");
     }
 }

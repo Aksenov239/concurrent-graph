@@ -354,8 +354,8 @@ public class FCDynamicGraph implements DynamicGraph {
         edgeIndex = new HashMap<>();
         edges = new HashMap<>();
 
-        fc = new FCArray(threads);
         readRequests = new Request[T];
+        reinitialize();
     }
 
     public void clear() {
@@ -373,8 +373,7 @@ public class FCDynamicGraph implements DynamicGraph {
         edges.clear();
         curEdge = 0;
 
-        fc = new FCArray(T);
-        allocatedRequests = new ThreadLocal<>();
+        reinitialize();
     }
 
     public void isConnected(Request request) {
@@ -603,17 +602,25 @@ public class FCDynamicGraph implements DynamicGraph {
                     loadedRequests = null;
 
                     int readLength = 0;
-                    int length = 0;
                     for (int i = 0; i < requests.length; i++) {
                         Request r = (Request) requests[i];
                         if (r == null) {
-                            length = i;
                             break;
                         }
                         if (r.type == CONNECTED) {
-                            r.status = PARALLEL;
                             readRequests[readLength++] = r;
+                        } else {
+                            if (r.type == ADD) { // the type could be add or remove
+                                addEdge(r);
+                            } else {
+                                removeEdge(r);
+                            }
+                            r.status = FINISHED;
                         }
+                    }
+
+                    for (int i = 0; i < readLength; i++) {
+                        readRequests[i].status = PARALLEL;
                     }
 
                     if (request.type == CONNECTED) {
@@ -626,18 +633,6 @@ public class FCDynamicGraph implements DynamicGraph {
                             continue;
                         while (r.status == PARALLEL) {
                             sleep();
-                        }
-                    }
-
-                    for (int i = 0; i < length; i++) {
-                        Request r = (Request) requests[i];
-                        if (r.type != CONNECTED) {
-                            if (r.type == ADD) { // the type could be add or remove
-                                addEdge(r);
-                            } else {
-                                removeEdge(r);
-                            }
-                            r.status = FINISHED;
                         }
                     }
 
