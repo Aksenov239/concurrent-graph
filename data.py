@@ -30,13 +30,14 @@ warmup = 10000
 duration = 10000
 sizes = [100000, 400000]
 connected = [50, 80, 100]
-types = ["tree"]
+types = ["tree", "trees"]
 
 benchmarks=[
             "fc.FCDynamicGraph",
             "fc.FCDynamicGraphFlush",
             "lockbased.BlockingDynamicGraph",
-            "lockbased.BlockingRWDynamicGraph"
+            "lockbased.BlockingRWDynamicGraph",
+#            "sequential.SequentialDynamicGraph"
            ]
 
 directory = "out/data/w{}-d{}/".format(warmup, duration)
