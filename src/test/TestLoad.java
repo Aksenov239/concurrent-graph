@@ -3,6 +3,8 @@ package test;
 import sequential.SequentialDynamicGraph;
 
 import java.io.PrintWriter;
+import java.util.ArrayList;
+import java.util.Random;
 import java.util.Scanner;
 
 /**
@@ -10,40 +12,55 @@ import java.util.Scanner;
  * Date: 12.07.2017
  * Time: 17:16
  */
-public class Test {
+public class TestLoad {
     public static void main(String[] args) {
-        new Test().run();
+        new TestLoad().run();
+    }
+
+    public class Edge {
+        int u, v;
+
+        public Edge(int u, int v) {
+            this.u = u;
+            this.v = v;
+        }
+    }
+
+    Random rnd = new Random(239);
+    public ArrayList<Edge>[] trees;
+
+    public void generateTrees(int n, int k) {
+        trees = new ArrayList[k];
+        for (int i = 0; i < k; i++) {
+            trees[i] = new ArrayList<>();
+
+            for (int j = 1; j < n; j++) {
+                trees[i].add(new Edge(rnd.nextInt(j), j));
+            }
+        }
     }
 
     public void run() {
-        Scanner in = new Scanner(System.in);
-        PrintWriter out = new PrintWriter(System.out);
-
-        int n = in.nextInt();
-        int q = in.nextInt();
+        int n = 10;
+        int k = 3;
 
         SequentialDynamicGraph sdg = new SequentialDynamicGraph(n, 1);
 
-        for (int i = 0; i < q; i++) {
-            String query = in.next();
+        generateTrees(n, k);
 
-            if (query.equals("?")) {
-                out.println(sdg.numberOfCC());
-                continue;
-            }
+        while (true) {
+            for (int i = 0; i < trees.length; i++) {
+                Edge e = trees[i].get(rnd.nextInt(trees[i].size()));
 
-            int u = in.nextInt() - 1;
-            int v = in.nextInt() - 1;
-
-            if (query.equals("c")) {
-                out.println(sdg.isConnected(u, v));
-            } else if (query.equals("+")) {
-                sdg.addEdge(u, v);
-            } else {
-                sdg.removeEdge(u, v);
+                if (rnd.nextBoolean()) {
+//                    System.err.println("Add " + e.u + " " + e.v);
+                    sdg.addEdge(e.u, e.v);
+                } else {
+//                    System.err.println("Remove " + e.u + " " + e.v);
+                    sdg.removeEdge(e.u, e.v);
+                }
             }
         }
 
-        out.close();
     }
 }
