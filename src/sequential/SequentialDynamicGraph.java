@@ -12,6 +12,7 @@ import java.util.Random;
  * Date: 12.07.2017
  * Time: 14:36
  */
+@SuppressWarnings("Duplicates")
 public class SequentialDynamicGraph implements DynamicGraph {
     Random rnd = new Random(239);
 
@@ -59,8 +60,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
             this.type = type;
             this.id = id;
             this.level = level;
-            hasVertex = false;
-            hasEdge = false;
+            hasVertex = isHasVertex();
+            hasEdge = isHasEdge();
         }
 
         public void update() {
@@ -114,6 +115,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
     }
 
     public Node merge(Node l, Node r) {
+        assert l != r;
+
         if (l == null) {
             return r;
         }
@@ -203,10 +206,10 @@ public class SequentialDynamicGraph implements DynamicGraph {
                 v = q;
             }
 
-            Node n1 = getRoot(vertexNode[u]);
-            Node n2 = getRoot(vertexNode[v]);
             makeFirst(vertexNode[u]);
             makeFirst(vertexNode[v]);
+            Node n1 = getRoot(vertexNode[u]);
+            Node n2 = getRoot(vertexNode[v]);
 
             int edgeId = edgeIndex.get(new Edge(u, v));
             Node c1 = new Node(NodeType.EDGE, edgeId, level);
@@ -241,8 +244,10 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
             Node[] t1 = split(head, pos2 + 1);
             Node[] t2 = split(t1[0], pos2);
+            assert t2[1] == c1 || t2[1] == c2;
             Node[] t3 = split(t2[0], pos1 + 1);
             Node[] t4 = split(t3[0], pos1);
+            assert t4[1] == c1 || t4[1] == c2;
             merge(t4[0], t1[1]);
         }
 
@@ -291,7 +296,7 @@ public class SequentialDynamicGraph implements DynamicGraph {
             if (root.isHasVertex()) {
                 for (int x : adjacent[root.id][root.level]) {
                     Edge e = edges.get(x);
-                    if (forest[level].isConnected(e.u, e.v)) {
+                    if (isConnected(e.u, e.v)) {
                         if (!edgeTaken.contains(x)) {
                             edgeTaken.add(x);
                             allEdges.add(x);
@@ -336,16 +341,16 @@ public class SequentialDynamicGraph implements DynamicGraph {
             k++;
         }
 
-        forest = new Forest[k];
-        for (int i = 0; i < k; i++) {
-            forest[i] = new Forest(n, i);
-        }
-
         adjacent = new HashSet[n][k];
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < k; j++) {
                 adjacent[i][j] = new HashSet<>();
             }
+        }
+
+        forest = new Forest[k];
+        for (int i = 0; i < k; i++) {
+            forest[i] = new Forest(n, i);
         }
 
         edgeIndex = new HashMap<>();
@@ -405,6 +410,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
         }
 
         curEdge++;
+
+//        verifyState();
         return true;
     }
 
@@ -415,7 +422,9 @@ public class SequentialDynamicGraph implements DynamicGraph {
         int level = edge.level;
         edge.level++;
         if (spanning) {
+            assert forest[level].nodeByEdge.get(new Edge(u, v)) != null;
             forest[level].updateToTop(forest[level].nodeByEdge.get(new Edge(u, v)));
+            assert forest[level].nodeByEdge.get(new Edge(v, u)) != null;
             forest[level].updateToTop(forest[level].nodeByEdge.get(new Edge(v, u)));
             forest[level + 1].link(u, v);
         } else {
@@ -428,6 +437,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
             forest[level + 1].updateToTop(forest[level + 1].vertexNode[u]);
             adjacent[v][level + 1].add(x);
             forest[level + 1].updateToTop(forest[level + 1].vertexNode[v]);
+
+            assert forest[level + 1].isConnected(u, v);
         }
     }
 
@@ -437,7 +448,12 @@ public class SequentialDynamicGraph implements DynamicGraph {
             u = v;
             v = q;
         }
-        int id = edgeIndex.get(new Edge(u, v));
+        Integer id = edgeIndex.get(new Edge(u, v));
+
+        if (id == null) {
+            return false;
+        }
+
         Edge e = edges.get(id);
 
         int rank = e.level;
@@ -448,11 +464,17 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
             forest[rank].updateToTop(forest[rank].vertexNode[u]);
             forest[rank].updateToTop(forest[rank].vertexNode[v]);
+
+            edgeIndex.remove(e);
+            edges.remove(id);
+            return true;
         }
 
         for (int level = rank; level >= 0; level--) {
             forest[level].cut(u, v);
         }
+
+        assert !isConnected(u, v);
 
         boolean replaced = false;
         for (int level = rank; level >= 0; level--) {
@@ -462,6 +484,12 @@ public class SequentialDynamicGraph implements DynamicGraph {
             forest[level].prepareSpanningEdges();
             forest[level].getSpanningEdges(getRoot(forest[level].vertexNode[w]));
             for (int x : forest[level].spanningEdges) {
+//                if (edges.get(x).level != level) {
+//                    assert forest[level].isConnected(u, v);
+//                    continue;
+//                }
+
+                assert !forest[level + 1].isConnected(u, v);
                 increaseLevel(x, true);
             }
 
@@ -476,6 +504,8 @@ public class SequentialDynamicGraph implements DynamicGraph {
 
                 adjacent[ge.u][level].remove(good);
                 adjacent[ge.v][level].remove(good);
+                forest[level].updateToTop(forest[level].vertexNode[ge.u]);
+                forest[level].updateToTop(forest[level].vertexNode[ge.v]);
 
                 for (int i = level; i >= 0; i--) {
                     forest[i].link(ge.u, ge.v);
@@ -493,6 +523,27 @@ public class SequentialDynamicGraph implements DynamicGraph {
         edgeIndex.remove(e);
         edges.remove(id);
 
+//        verifyState();
+
         return true;
+    }
+
+    public void verifyState() {
+        for (int level = 0; level < forest.length; level++) {
+            for (int v = 0; v < N; v++) {
+                for (int x : adjacent[v][level]) {
+                    Edge e = edges.get(x);
+                    assert e.level == level;
+                    assert forest[level].isConnected(e.u, e.v);
+                }
+            }
+
+            for (Edge e : forest[level].nodeByEdge.keySet()) {
+                assert forest[level].isConnected(e.u, e.v);
+                if (level > 0) {
+                    assert forest[level - 1].nodeByEdge.containsKey(e);
+                }
+            }
+        }
     }
 }
