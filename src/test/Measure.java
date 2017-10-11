@@ -24,7 +24,7 @@ public class Measure {
 
     DynamicGraph graph;
 
-    ArrayList<Edge>[] initialTrees;
+    ArrayList<Edge> initialTrees;
 
     public class Edge {
         public int u, v;
@@ -37,18 +37,22 @@ public class Measure {
 
     public void setup(String workerType) { // Setup the graph with tree
         Random rnd = new Random(239);
-        if (workerType.equals("tree")) {
-            initialTrees = new ArrayList[1];
-        } else if (workerType.equals("trees")) {
-            initialTrees = new ArrayList[threads];
-        } else if (workerType.equals("graph")) {
-            initialTrees = new ArrayList[threads];
+        initialTrees = new ArrayList<>();
+
+        int cnt = 0;
+        switch (workerType) {
+            case "tree":
+                cnt = 1;
+                break;
+            case "trees":
+                cnt = 10;
+                break;
         }
-        for (int t = 0; t < initialTrees.length; t++) {
-            initialTrees[t] = new ArrayList<>();
+
+        for (int t = 0; t < cnt; t++) {
             for (int i = 1; i < size; i++) {
                 Edge e = new Edge(i, rnd.nextInt(i));
-                initialTrees[t].add(e);
+                initialTrees.add(e);
                 if (rnd.nextBoolean()) {
                     graph.addEdge(e.u, e.v);
                 }
@@ -66,9 +70,10 @@ public class Measure {
         Worker[] workers = new Worker[threads];
         for (int i = 0; i < threads; i++) {
             if (workerType.equals("tree")) {
-                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees[0]);
-            } if (workerType.equals("trees")) {
-                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees[i]);
+                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees);
+            }
+            if (workerType.equals("trees")) {
+                workers[i] = new TreeWorker(i, graph, size, connectedRatio, initialTrees);
             } else {
                 workers[i] = new RandomWorker(i, graph, size, connectedRatio);
             }
