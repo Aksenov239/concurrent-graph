@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	63
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	50%
+Benchmark:        	fc.FCDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	11.021054999
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.149011819
+Throughput:            	346.0435422318824 ops/sec
+Total operations:      	3512
+ -- Total add:         	910
+     | successful      	46.81318681318681 %
+ -- Total remove:      	872
+     | successful      	51.03211009174312 %
+ -- Total isConnected: 	1730
+     | successful      	100.0 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.376884351
+Throughput:            	148536.39569101142 ops/sec
+Total operations:      	1541345
+ -- Total add:         	385514
+     | successful      	49.90402423777087 %
+ -- Total remove:      	385594
+     | successful      	50.02619335363102 %
+ -- Total isConnected: 	770237
+     | successful      	99.98351156851722 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	18.136368442
+Throughput:            	77954.3602966246 ops/sec
+Total operations:      	1413809
+ -- Total add:         	353684
+     | successful      	49.87700885536241 %
+ -- Total remove:      	353701
+     | successful      	50.00862310256403 %
+ -- Total isConnected: 	706424
+     | successful      	99.98400394097595 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	20.597542376
+Throughput:            	42500.45874502052 ops/sec
+Total operations:      	875405
+ -- Total add:         	218468
+     | successful      	49.854898657927016 %
+ -- Total remove:      	218984
+     | successful      	50.02511599020933 %
+ -- Total isConnected: 	437953
+     | successful      	99.98424488472507 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	17.354959608
+Throughput:            	47227.940514605194 ops/sec
+Total operations:      	819639
+ -- Total add:         	204490
+     | successful      	49.83617780820578 %
+ -- Total remove:      	205034
+     | successful      	49.97707697259967 %
+ -- Total isConnected: 	410115
+     | successful      	99.98390695292784 %

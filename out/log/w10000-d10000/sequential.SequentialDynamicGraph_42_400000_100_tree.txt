@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	42
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	100%
+Benchmark:        	sequential.SequentialDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.099535992
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.070701115
+Throughput:            	3.546136221519667E7 ops/sec
+Total operations:      	357120780
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	357120780
+     | successful      	0.010334598843562113 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.044115455
+Throughput:            	4.114398832345959E7 ops/sec
+Total operations:      	413254969
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	413254969
+     | successful      	0.010343009329913224 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.057792064
+Throughput:            	3.34701667978329E7 ops/sec
+Total operations:      	336635978
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	336635978
+     | successful      	0.010322723140424402 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.051163632
+Throughput:            	3.5517222887850404E7 ops/sec
+Total operations:      	356989419
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	356989419
+     | successful      	0.010341763098586403 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.064247859
+Throughput:            	4.652841112028499E7 ops/sec
+Total operations:      	468273462
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	468273462
+     | successful      	0.010328153082482389 %

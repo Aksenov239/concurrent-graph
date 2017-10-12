@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	1
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	100000
+Connectivity:     	100%
+Benchmark:        	sequential.SequentialDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.004991095
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000805126
+Throughput:            	2272875.2049077773 ops/sec
+Total operations:      	22730582
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	22730582
+     | successful      	0.032933604603700865 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000691355
+Throughput:            	2121121.3552145464 ops/sec
+Total operations:      	21212680
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	21212680
+     | successful      	0.03293313244719668 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000726221
+Throughput:            	2876777.4823779967 ops/sec
+Total operations:      	28769864
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	28769864
+     | successful      	0.03295809809876057 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000815991
+Throughput:            	2783762.24750599 ops/sec
+Total operations:      	27839894
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	27839894
+     | successful      	0.03285932051321747 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000811796
+Throughput:            	3141213.4975447543 ops/sec
+Total operations:      	31414685
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	31414685
+     | successful      	0.032885893969651456 %

@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	3
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	50%
+Benchmark:        	lockbased.BlockingRWDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.003624184
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.005603896
+Throughput:            	79774.29531455839 ops/sec
+Total operations:      	798190
+ -- Total add:         	200238
+     | successful      	49.84168839081493 %
+ -- Total remove:      	199559
+     | successful      	49.8589389604077 %
+ -- Total isConnected: 	398393
+     | successful      	99.98318243543436 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.001764332
+Throughput:            	71713.34738463821 ops/sec
+Total operations:      	717260
+ -- Total add:         	180036
+     | successful      	49.87891310626763 %
+ -- Total remove:      	179094
+     | successful      	49.79396294683239 %
+ -- Total isConnected: 	358130
+     | successful      	99.98240862256722 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.009552127
+Throughput:            	64785.71586143057 ops/sec
+Total operations:      	648476
+ -- Total add:         	162882
+     | successful      	49.91159244115372 %
+ -- Total remove:      	161844
+     | successful      	49.7423444798695 %
+ -- Total isConnected: 	323750
+     | successful      	99.98146718146718 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.002229291
+Throughput:            	62313.10859478276 ops/sec
+Total operations:      	623270
+ -- Total add:         	156543
+     | successful      	49.92621835534007 %
+ -- Total remove:      	155592
+     | successful      	49.77183916910895 %
+ -- Total isConnected: 	311135
+     | successful      	99.98200138203674 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.065827706
+Throughput:            	65123.506893452875 ops/sec
+Total operations:      	655522
+ -- Total add:         	164663
+     | successful      	49.911030407559686 %
+ -- Total remove:      	163640
+     | successful      	49.78000488878025 %
+ -- Total isConnected: 	327219
+     | successful      	99.98166365645027 %

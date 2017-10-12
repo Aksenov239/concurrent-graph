@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	35
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	50%
+Benchmark:        	lockbased.BlockingRWDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.044286564
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.043105052
+Throughput:            	90412.57612048725 ops/sec
+Total operations:      	908023
+ -- Total add:         	226936
+     | successful      	99.99867804138611 %
+ -- Total remove:      	227270
+     | successful      	0.0026400316803801647 %
+ -- Total isConnected: 	453817
+     | successful      	40.8711000248999 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.042655101
+Throughput:            	102232.22740147353 ops/sec
+Total operations:      	1026683
+ -- Total add:         	256680
+     | successful      	99.9980520492442 %
+ -- Total remove:      	256859
+     | successful      	0.0027252305739724906 %
+ -- Total isConnected: 	513144
+     | successful      	44.678102053224826 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.664220501
+Throughput:            	92566.54060251599 ops/sec
+Total operations:      	987150
+ -- Total add:         	246717
+     | successful      	99.99797338651167 %
+ -- Total remove:      	247191
+     | successful      	0.002831818310537196 %
+ -- Total isConnected: 	493242
+     | successful      	43.47379176955734 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.034111149
+Throughput:            	93823.05876627877 ops/sec
+Total operations:      	941431
+ -- Total add:         	235296
+     | successful      	99.99872501019992 %
+ -- Total remove:      	235707
+     | successful      	0.0025455332255724266 %
+ -- Total isConnected: 	470428
+     | successful      	41.978156062139156 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.046520228
+Throughput:            	93144.4897101739 ops/sec
+Total operations:      	935778
+ -- Total add:         	233836
+     | successful      	99.99828939940814 %
+ -- Total remove:      	234304
+     | successful      	0.0029875717017208412 %
+ -- Total isConnected: 	467638
+     | successful      	41.83000526047926 %

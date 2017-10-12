@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	35
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	80%
+Benchmark:        	fc.FCDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.04271275
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.057991299
+Throughput:            	430913.8744662579 ops/sec
+Total operations:      	4334128
+ -- Total add:         	434029
+     | successful      	99.99746560713685 %
+ -- Total remove:      	432632
+     | successful      	0.004622866547088518 %
+ -- Total isConnected: 	3467467
+     | successful      	60.68738361460974 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.058171247
+Throughput:            	478188.31891876616 ops/sec
+Total operations:      	4809700
+ -- Total add:         	481632
+     | successful      	99.99709321639759 %
+ -- Total remove:      	480163
+     | successful      	0.004581777438078319 %
+ -- Total isConnected: 	3847905
+     | successful      	63.60713167294931 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.851395455
+Throughput:            	445617.43418648635 ops/sec
+Total operations:      	4835571
+ -- Total add:         	484270
+     | successful      	99.99710905073616 %
+ -- Total remove:      	482751
+     | successful      	0.004557214796033566 %
+ -- Total isConnected: 	3868550
+     | successful      	63.75489524498843 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.030426526
+Throughput:            	476097.3013083213 ops/sec
+Total operations:      	4775459
+ -- Total add:         	478198
+     | successful      	99.99707234241883 %
+ -- Total remove:      	476813
+     | successful      	0.0046139681594251835 %
+ -- Total isConnected: 	3820448
+     | successful      	63.409029516957176 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.028459246
+Throughput:            	470230.1604188022 ops/sec
+Total operations:      	4715684
+ -- Total add:         	472023
+     | successful      	99.99724589691604 %
+ -- Total remove:      	470718
+     | successful      	0.004673711224129946 %
+ -- Total isConnected: 	3772943
+     | successful      	63.04187473810232 %
