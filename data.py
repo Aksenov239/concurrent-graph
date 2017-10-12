@@ -35,9 +35,10 @@ types = ["tree", "trees"]
 benchmarks=[
             "fc.FCDynamicGraph",
             "fc.FCDynamicGraphFlush",
+            "fc.FCClassicDynamicGraphFlush",
             "lockbased.BlockingDynamicGraph",
             "lockbased.BlockingRWDynamicGraph",
-#            "sequential.SequentialDynamicGraph"
+            "sequential.SequentialDynamicGraph"
            ]
 
 directory = "out/data/w{}-d{}/".format(warmup, duration)

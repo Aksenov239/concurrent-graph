@@ -13,7 +13,7 @@ keys = ["throughput"]
 
 warmup = 10000
 duration = 10000
-iterations = 25
+iterations = 5
 procs = [1, 3, 7, 14, 21, 28, 35, 42, 49, 56, 63]
 sizes = [100000, 400000]
 connected = [50, 80, 100]
@@ -24,9 +24,10 @@ max_proc = int(sys.argv[1])
 benchmarks = [
            "fc.FCDynamicGraph",
            "fc.FCDynamicGraphFlush",
+           "fc.FCClassicDynamicGraphFlush",
            "lockbased.BlockingDynamicGraph",
            "lockbased.BlockingRWDynamicGraph",
-#           "sequential.SequentialDynamicGraph"
+           "sequential.SequentialDynamicGraph"
          ]
 
 if not os.path.isdir("out/log/w{}-d{}/".format(warmup, duration)):
