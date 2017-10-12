@@ -6,24 +6,20 @@ import sequential.SequentialDynamicGraph;
 import sun.misc.Unsafe;
 
 import java.lang.reflect.Constructor;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Random;
 
 /**
  * User: Aksenov Vitaly
  * Date: 14.07.2017
  * Time: 15:56
  */
-public class FCDynamicGraphFlush implements DynamicGraph {
+public class FCClassicDynamicGraphFlush implements DynamicGraph {
     SequentialDynamicGraph sdg;
 
     int N;
     int T;
     int TRIES;
 
-    public FCDynamicGraphFlush(int n, int threads) {
+    public FCClassicDynamicGraphFlush(int n, int threads) {
         T = threads;
         TRIES = T;
         N = n;
@@ -42,7 +38,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
     public void isConnected(Request request) {
         request.result = sdg.isConnected(request.u, request.v);
         request.status = FINISHED;
-        unsafe.storeFence();
     }
 
     public void addEdge(Request r) {
@@ -162,7 +157,7 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                             break;
                         }
                         if (r.type == CONNECTED) {
-                            readRequests[readLength++] = r;
+                            isConnected(request);
                         } else {
                             if (r.type == ADD) { // the type could be add or remove
                                 addEdge(r);
@@ -174,25 +169,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                     }
                     
                     unsafe.storeFence();
-
-                    for (int i = 0; i < readLength; i++) {
-                        readRequests[i].status = PARALLEL;
-                    }
-
-                    unsafe.storeFence();
-
-                    if (request.type == CONNECTED) {
-                        isConnected(request);
-                    }
-
-                    unsafe.loadFence();
-                    for (int i = 0; i < readLength; i++) {
-                        Request r = readRequests[i];
-                        while (r.status == PARALLEL) {
-                            sleep();
-                            unsafe.loadFence();
-                        }
-                    }
 
                     fc.cleanup();
                 }
