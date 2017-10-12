@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	35
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	80%
+Benchmark:        	lockbased.BlockingRWDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.914794465
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.035218002
+Throughput:            	108426.14478162285 ops/sec
+Total operations:      	1088080
+ -- Total add:         	108968
+     | successful      	49.79718816533294 %
+ -- Total remove:      	108797
+     | successful      	50.086859012656596 %
+ -- Total isConnected: 	870315
+     | successful      	99.98150095080517 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.032411376
+Throughput:            	102413.36419456649 ops/sec
+Total operations:      	1027453
+ -- Total add:         	102886
+     | successful      	49.83185273020625 %
+ -- Total remove:      	102703
+     | successful      	49.989776345384264 %
+ -- Total isConnected: 	821864
+     | successful      	99.98126210662592 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	21.239801118
+Throughput:            	50468.08084712124 ops/sec
+Total operations:      	1071932
+ -- Total add:         	107316
+     | successful      	49.794997949979496 %
+ -- Total remove:      	107204
+     | successful      	50.053169657848585 %
+ -- Total isConnected: 	857412
+     | successful      	99.98157245291645 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.035838098
+Throughput:            	108208.40166965396 ops/sec
+Total operations:      	1085962
+ -- Total add:         	108722
+     | successful      	49.77925350894943 %
+ -- Total remove:      	108535
+     | successful      	50.06864145206615 %
+ -- Total isConnected: 	868705
+     | successful      	99.98135155202284 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.033197977
+Throughput:            	112960.89268826356 ops/sec
+Total operations:      	1133359
+ -- Total add:         	113548
+     | successful      	49.78247084933244 %
+ -- Total remove:      	113335
+     | successful      	50.08779282657608 %
+ -- Total isConnected: 	906476
+     | successful      	99.98146669078939 %

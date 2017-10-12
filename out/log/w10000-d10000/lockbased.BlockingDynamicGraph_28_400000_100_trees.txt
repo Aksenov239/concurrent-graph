@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	28
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	100%
+Benchmark:        	lockbased.BlockingDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.031483958
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.037690646
+Throughput:            	155480.48401172057 ops/sec
+Total operations:      	1560665
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	1560665
+     | successful      	99.98295598350703 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	19.656401873
+Throughput:            	93808.87773427341 ops/sec
+Total operations:      	1843945
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	1843945
+     | successful      	99.98373053426214 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.026232269
+Throughput:            	206948.22784181804 ops/sec
+Total operations:      	2074911
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	2074911
+     | successful      	99.98313180661725 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	21.921650582
+Throughput:            	102368.66022500311 ops/sec
+Total operations:      	2244090
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	2244090
+     | successful      	99.98293294832203 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.031821564
+Throughput:            	173185.29729781786 ops/sec
+Total operations:      	1737364
+ -- Total add:         	0
+     | successful      	NaN %
+ -- Total remove:      	0
+     | successful      	NaN %
+ -- Total isConnected: 	1737364
+     | successful      	99.98336560444443 %

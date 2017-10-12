@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	1
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	80%
+Benchmark:        	fc.FCDynamicGraphFlush
+Warmup started
+Setup finished
+Total time spent:    	10.001869687
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000799783
+Throughput:            	310698.4508660871 ops/sec
+Total operations:      	3107233
+ -- Total add:         	310833
+     | successful      	99.99935656767461 %
+ -- Total remove:      	311513
+     | successful      	0.00321013890271032 %
+ -- Total isConnected: 	2484887
+     | successful      	50.68170101900006 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000775157
+Throughput:            	341516.9270763358 ops/sec
+Total operations:      	3415434
+ -- Total add:         	342071
+     | successful      	99.99912298908706 %
+ -- Total remove:      	342174
+     | successful      	0.0032147387001934687 %
+ -- Total isConnected: 	2731189
+     | successful      	53.56447320196442 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000964011
+Throughput:            	337292.28465273796 ops/sec
+Total operations:      	3373248
+ -- Total add:         	337820
+     | successful      	99.99911195311113 %
+ -- Total remove:      	338011
+     | successful      	0.0029584835996461652 %
+ -- Total isConnected: 	2697417
+     | successful      	53.1849543470661 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.000724239
+Throughput:            	322485.34435366903 ops/sec
+Total operations:      	3225087
+ -- Total add:         	322689
+     | successful      	99.9990703122821 %
+ -- Total remove:      	323269
+     | successful      	0.003093398995882686 %
+ -- Total isConnected: 	2579129
+     | successful      	51.81598128670571 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.00108218
+Throughput:            	350402.280166045 ops/sec
+Total operations:      	3504402
+ -- Total add:         	351076
+     | successful      	99.99914548416866 %
+ -- Total remove:      	351063
+     | successful      	0.0031333407394114445 %
+ -- Total isConnected: 	2802263
+     | successful      	54.33390798793689 %

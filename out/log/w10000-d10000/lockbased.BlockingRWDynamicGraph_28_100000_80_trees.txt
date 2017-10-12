@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	28
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	100000
+Connectivity:     	80%
+Benchmark:        	lockbased.BlockingRWDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.438734046
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.028988783
+Throughput:            	112573.46323028587 ops/sec
+Total operations:      	1128998
+ -- Total add:         	113255
+     | successful      	49.83267846894177 %
+ -- Total remove:      	113029
+     | successful      	50.51181555176105 %
+ -- Total isConnected: 	902714
+     | successful      	99.98670675319093 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.040214263
+Throughput:            	104428.64788890613 ops/sec
+Total operations:      	1048486
+ -- Total add:         	104973
+     | successful      	49.823287893077264 %
+ -- Total remove:      	105079
+     | successful      	50.44109669867433 %
+ -- Total isConnected: 	838434
+     | successful      	99.98664176309644 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.023082381
+Throughput:            	104834.21766460287 ops/sec
+Total operations:      	1050762
+ -- Total add:         	105209
+     | successful      	49.83889210999059 %
+ -- Total remove:      	105289
+     | successful      	50.43926715991224 %
+ -- Total isConnected: 	840264
+     | successful      	99.9864328353946 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	13.05091634
+Throughput:            	86027.36932416807 ops/sec
+Total operations:      	1122736
+ -- Total add:         	112588
+     | successful      	49.85788894020677 %
+ -- Total remove:      	112463
+     | successful      	50.497496954553945 %
+ -- Total isConnected: 	897685
+     | successful      	99.98663228192517 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.035882762
+Throughput:            	105973.3383920134 ops/sec
+Total operations:      	1063536
+ -- Total add:         	106426
+     | successful      	49.79986093623739 %
+ -- Total remove:      	106592
+     | successful      	50.44280996697688 %
+ -- Total isConnected: 	850518
+     | successful      	99.98683155441742 %

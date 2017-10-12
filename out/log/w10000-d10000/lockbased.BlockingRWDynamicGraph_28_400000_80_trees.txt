@@ -1,0 +1,78 @@
+Benchmark parameters
+-------------------
+Number of threads:	28
+Iterations:       	5
+Length:           	10000
+Warmup:           	10000
+Initial size:     	400000
+Connectivity:     	80%
+Benchmark:        	lockbased.BlockingRWDynamicGraph
+Warmup started
+Setup finished
+Total time spent:    	10.927840846
+Warmup finished
+Start iteration 1
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.03362256
+Throughput:            	112437.55615220193 ops/sec
+Total operations:      	1128156
+ -- Total add:         	113154
+     | successful      	49.6730120013433 %
+ -- Total remove:      	112978
+     | successful      	50.156667669811824 %
+ -- Total isConnected: 	902024
+     | successful      	99.9825946981455 %
+Start iteration 2
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.048802488
+Throughput:            	95477.44630723207 ops/sec
+Total operations:      	959434
+ -- Total add:         	96148
+     | successful      	49.74310438074635 %
+ -- Total remove:      	96057
+     | successful      	50.160842000062466 %
+ -- Total isConnected: 	767229
+     | successful      	99.98188285375032 %
+Start iteration 3
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.038108738
+Throughput:            	99554.60994529027 ops/sec
+Total operations:      	999340
+ -- Total add:         	100090
+     | successful      	49.7182535717854 %
+ -- Total remove:      	100132
+     | successful      	50.11884312707227 %
+ -- Total isConnected: 	799118
+     | successful      	99.98235554699056 %
+Start iteration 4
+Setup finished
+Results:
+-----------------
+Total time spent:      	16.582210527
+Throughput:            	8.382477099399571 ops/sec
+Total operations:      	139
+ -- Total add:         	12
+     | successful      	50.0 %
+ -- Total remove:      	14
+     | successful      	50.0 %
+ -- Total isConnected: 	113
+     | successful      	100.0 %
+Start iteration 5
+Setup finished
+Results:
+-----------------
+Total time spent:      	10.04654334
+Throughput:            	104844.71766584745 ops/sec
+Total operations:      	1053327
+ -- Total add:         	105393
+     | successful      	49.67217936675111 %
+ -- Total remove:      	105560
+     | successful      	50.145888594164454 %
+ -- Total isConnected: 	842374
+     | successful      	99.9824306068326 %
