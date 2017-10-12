@@ -148,8 +148,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
 
                         loadedRequests = requests;
 
-                        unsafe.storeFence();
-
                         ((Request) requests[0]).leader = true;
 
                         unsafe.storeFence();
@@ -190,8 +188,6 @@ public class FCDynamicGraphFlush implements DynamicGraph {
                     unsafe.loadFence();
                     for (int i = 0; i < readLength; i++) {
                         Request r = readRequests[i];
-                        if (r.type != CONNECTED)
-                            continue;
                         while (r.status == PARALLEL) {
                             sleep();
                             unsafe.loadFence();
