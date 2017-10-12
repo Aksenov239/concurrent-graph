@@ -4,9 +4,6 @@ import abstraction.DynamicGraph;
 import org.openjdk.jmh.logic.BlackHole;
 import sequential.SequentialDynamicGraph;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 import java.util.Random;
 
 /**
@@ -14,7 +11,7 @@ import java.util.Random;
  * Date: 14.07.2017
  * Time: 15:56
  */
-public class FCDynamicGraph implements DynamicGraph {
+public class FCClassicDynamicGraph implements DynamicGraph {
     Random rnd = new Random(239);
 
     SequentialDynamicGraph sdg;
@@ -23,7 +20,7 @@ public class FCDynamicGraph implements DynamicGraph {
     int T;
     int TRIES;
 
-    public FCDynamicGraph(int n, int threads) {
+    public FCClassicDynamicGraph(int n, int threads) {
         T = threads;
         TRIES = T;
         N = n;
@@ -149,14 +146,10 @@ public class FCDynamicGraph implements DynamicGraph {
                     }
                     loadedRequests = null;
 
-                    int readLength = 0;
                     for (int i = 0; i < requests.length; i++) {
                         Request r = (Request) requests[i];
-                        if (r == null) {
-                            break;
-                        }
                         if (r.type == CONNECTED) {
-                            readRequests[readLength++] = r;
+                            isConnected(r);
                         } else {
                             if (r.type == ADD) { // the type could be add or remove
                                 addEdge(r);
@@ -164,23 +157,6 @@ public class FCDynamicGraph implements DynamicGraph {
                                 removeEdge(r);
                             }
                             r.status = FINISHED;
-                        }
-                    }
-
-                    for (int i = 0; i < readLength; i++) {
-                        readRequests[i].status = PARALLEL;
-                    }
-
-                    if (request.type == CONNECTED) {
-                        isConnected(request);
-                    }
-
-                    for (int i = 0; i < readLength; i++) {
-                        Request r = readRequests[i];
-                        if (r.type != CONNECTED)
-                            continue;
-                        while (r.status == PARALLEL) {
-                            sleep();
                         }
                     }
 
