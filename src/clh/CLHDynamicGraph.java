@@ -117,7 +117,9 @@ public class CLHDynamicGraph implements DynamicGraph {
                 throw new AssertionError();
             }
 
-            CLHRequest[] requests = fc.loadRequests();
+            CLHRequest[] requests = fc.loadRequests(request);
+
+//            System.err.println(requests.length);
 
             int readLength = 0;
             for (int i = 0; i < requests.length; i++) {
