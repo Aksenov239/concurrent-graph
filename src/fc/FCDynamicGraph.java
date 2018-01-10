@@ -80,11 +80,16 @@ public class FCDynamicGraph implements DynamicGraph {
     private static final int REMOVE = 2;
 
     public class Request extends FCArray.FCRequest {
+        @sun.misc.Contended("init")
         volatile int type;
-        volatile int u, v;
+        @sun.misc.Contended("init")
+        volatile int u;
+        @sun.misc.Contended("init")
+        volatile int v;
 
+        @sun.misc.Contended("status")
         volatile int status;
-
+        @sun.misc.Contended("status")
         volatile boolean leader;
 
         public Request() {
@@ -103,6 +108,7 @@ public class FCDynamicGraph implements DynamicGraph {
         }
 
         // For result
+        @sun.misc.Contended("result")
         boolean result;
     }
 
