@@ -45,7 +45,7 @@ public class Measure {
                 cnt = 1;
                 break;
             case "trees":
-                cnt = 10;
+                cnt = 3;
                 break;
         }
 
